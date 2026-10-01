@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Heart Disease Predictor</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            <h1>❤️ Heart Disease Predictor</h1>
+
+            <p>
+                Enter patient information to get an ML-based prediction.
+            </p>
+
+        </div>
+
+
+        <form id="predictionForm">
+
+            <div class="grid">
+
+                <!-- AGE -->
+                <div class="input-group">
+
+                    <label for="age">Age</label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        min="1"
+                        max="120"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SEX -->
+                <div class="input-group">
+
+                    <label for="sex">Sex</label>
+
+                    <select id="sex" required>
+
+                        <option value="1">Male</option>
+
+                        <option value="0">Female</option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CHEST PAIN -->
+                <div class="input-group">
+
+                    <label for="cp">
+                        Chest Pain Type
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cp"
+                        min="0"
+                        max="3"
+                        required
+                    >
+
+                    <small>
+                        Enter 0 - 3
+                    </small>
+
+                </div>
+
+
+                <!-- BLOOD PRESSURE -->
+                <div class="input-group">
+
+                    <label for="trestbps">
+                        Resting Blood Pressure
+                    </label>
+
+                    <input
+                        type="number"
+                        id="trestbps"
+                        min="50"
+                        max="250"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CHOLESTEROL -->
+                <div class="input-group">
+
+                    <label for="chol">
+                        Cholesterol
+                    </label>
+
+                    <input
+                        type="number"
+                        id="chol"
+                        min="50"
+                        max="600"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- FASTING BLOOD SUGAR -->
+                <div class="input-group">
+
+                    <label for="fbs">
+                        Fasting Blood Sugar
+                    </label>
+
+                    <select id="fbs" required>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- REST ECG -->
+                <div class="input-group">
+
+                    <label for="restecg">
+                        Resting ECG
+                    </label>
+
+                    <input
+                        type="number"
+                        id="restecg"
+                        min="0"
+                        max="2"
+                        required
+                    >
+
+                    <small>
+                        Enter 0 - 2
+                    </small>
+
+                </div>
+
+
+                <!-- MAX HEART RATE -->
+                <div class="input-group">
+
+                    <label for="thalach">
+                        Maximum Heart Rate
+                    </label>
+
+                    <input
+                        type="number"
+                        id="thalach"
+                        min="50"
+                        max="250"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- EXERCISE ANGINA -->
+                <div class="input-group">
+
+                    <label for="exang">
+                        Exercise Angina
+                    </label>
+
+                    <select id="exang" required>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- OLDPEAK -->
+                <div class="input-group">
+
+                    <label for="oldpeak">
+                        Oldpeak
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        id="oldpeak"
+                        min="0"
+                        max="10"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SLOPE -->
+                <div class="input-group">
+
+                    <label for="slope">
+                        Slope
+                    </label>
+
+                    <input
+                        type="number"
+                        id="slope"
+                        min="0"
+                        max="2"
+                        required
+                    >
+
+                    <small>
+                        Enter 0 - 2
+                    </small>
+
+                </div>
+
+
+                <!-- CA -->
+                <div class="input-group">
+
+                    <label for="ca">
+                        CA
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ca"
+                        min="0"
+                        max="4"
+                        required
+                    >
+
+                    <small>
+                        Enter 0 - 4
+                    </small>
+
+                </div>
+
+
+                <!-- THAL -->
+                <div class="input-group">
+
+                    <label for="thal">
+                        Thal
+                    </label>
+
+                    <input
+                        type="number"
+                        id="thal"
+                        min="0"
+                        max="3"
+                        required
+                    >
+
+                    <small>
+                        Enter 0 - 3
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- PREDICT BUTTON -->
+            <button
+                type="submit"
+                id="predictButton"
+            >
+                Predict Heart Disease
+            </button>
+
+        </form>
+
+
+        <!-- LOADING -->
+        <div
+            id="loading"
+            class="loading"
+            style="display: none;"
+        >
+            Predicting...
+        </div>
+
+
+        <!-- RESULT -->
+        <div
+            id="result"
+            class="result"
+            style="display: none;"
+        >
+
+            <h2 id="resultText"></h2>
+
+            <p>
+                Probability:
+                <strong id="probability"></strong>
+            </p>
+
+        </div>
+
+
+        <!-- DISCLAIMER -->
+        <div class="disclaimer">
+
+            <strong>Disclaimer:</strong>
+
+            This application is an educational
+            machine-learning demonstration and
+            is not a medical diagnosis.
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
