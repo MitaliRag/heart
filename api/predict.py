@@ -10,19 +10,19 @@ from fastapi.middleware.cors import CORSMiddleware
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
-
 MODEL_DIR = os.path.join(BASE_DIR, "model")
 
-# Load trained files
+# Load model files
 try:
     model = joblib.load(os.path.join(MODEL_DIR, "model.pkl"))
     scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
     features = joblib.load(os.path.join(MODEL_DIR, "features.pkl"))
 except Exception as error:
     raise RuntimeError(
-        f"Could not load model files from {MODEL_DIR}: {error}"
+        f"Could not load model files: {error}"
     ) from error
 
+# Create API
 app = FastAPI(title="Heart Disease Prediction API")
 
 app.add_middleware(
@@ -36,7 +36,9 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return {"message": "Heart Disease Prediction API is running"}
+    return {
+        "message": "Heart Disease Prediction API is running"
+    }
 
 
 @app.get("/features")
@@ -50,6 +52,7 @@ def get_features():
 @app.post("/predict")
 def predict(data: dict):
     try:
+        # Check required input fields
         missing_features = [
             feature for feature in features
             if feature not in data
@@ -61,7 +64,7 @@ def predict(data: dict):
                 detail=f"Missing features: {missing_features}",
             )
 
-        # Match the model's expected feature columns
+        # Prepare input in the expected feature order
         df = pd.DataFrame([data])
         df = pd.get_dummies(df)
         df = df.reindex(columns=features, fill_value=0)
@@ -105,4 +108,5 @@ def predict(data: dict):
             status_code=500,
             detail=f"Prediction failed: {str(error)}",
         )
+
 
