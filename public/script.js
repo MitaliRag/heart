@@ -27,6 +27,8 @@ form.addEventListener("submit", async function (event) {
         thal: Number(document.getElementById("thal").value)
     };
 
+    console.log("Sending data:", data);
+
     try {
         const response = await fetch("/api/predict", {
             method: "POST",
@@ -36,7 +38,20 @@ form.addEventListener("submit", async function (event) {
             body: JSON.stringify(data)
         });
 
-        const output = await response.json();
+        // Read the response once, even if the server returns HTML.
+        const responseText = await response.text();
+        console.log("HTTP status:", response.status);
+        console.log("API response:", responseText);
+
+        let output;
+
+        try {
+            output = JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                `The API returned a non-JSON response (HTTP ${response.status}). Check Vercel Runtime Logs.`
+            );
+        }
 
         if (!response.ok) {
             throw new Error(
@@ -47,17 +62,24 @@ form.addEventListener("submit", async function (event) {
         }
 
         if (output.success !== true) {
-            throw new Error(output.error || "Prediction failed.");
+            throw new Error(
+                output.detail ||
+                output.error ||
+                "Prediction failed."
+            );
         }
 
-        resultText.textContent = output.result;
+        resultText.textContent = output.result || "Prediction completed";
 
         const probabilityValue =
             output.probability ?? output.risk_probability;
 
-        if (probabilityValue !== null &&
-            probabilityValue !== undefined) {
+        if (
+            probabilityValue !== null &&
+            probabilityValue !== undefined
+        ) {
             const numericValue = Number(probabilityValue);
+
             const percent = numericValue <= 1
                 ? numericValue * 100
                 : numericValue;
@@ -71,8 +93,11 @@ form.addEventListener("submit", async function (event) {
 
     } catch (error) {
         console.error("Prediction error:", error);
+
         alert("Prediction Error: " + error.message);
+
     } finally {
         loading.style.display = "none";
     }
 });
+
